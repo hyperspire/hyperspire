@@ -9,8 +9,8 @@ use std::io::BufReader;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let mut cert_file = BufReader::new(File::open("cert.pem").unwrap());
-    let mut key_file = BufReader::new(File::open("key.pem").unwrap());
+    let mut cert_file = BufReader::new(File::open("ssl/cert.pem").unwrap());
+    let mut key_file = BufReader::new(File::open("ssl/key.pem").unwrap());
 
     let cert_chain: Vec<CertificateDer> = rustls_pemfile::certs(&mut cert_file)
         .map(|result| result.unwrap())
