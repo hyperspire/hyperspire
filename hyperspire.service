@@ -1,0 +1,14 @@
+[Unit]
+Description=Hyperspire Actix Web Service
+After=network.target
+
+[Service]
+Type=simple
+User=opc
+WorkingDirectory=/home/opc/hyperspire
+ExecStart=/home/opc/hyperspire/target/release/hyperspire
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
