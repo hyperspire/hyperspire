@@ -9,12 +9,18 @@ use std::io::BufReader;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let mut cert_file = BufReader::new(File::open("ssl/cert.pem").unwrap());
-    let mut key_file = BufReader::new(File::open("ssl/key.pem").unwrap());
+    let mut server_cert_file = BufReader::new(File::open("ssl/key.pem").unwrap());
+    let mut chain_cert_file = BufReader::new(File::open("ssl/cert.pem").unwrap());
+    let mut key_file = BufReader::new(File::open("ssl/hyperspire.key").unwrap());
 
-    let cert_chain: Vec<CertificateDer> = rustls_pemfile::certs(&mut cert_file)
+    let mut cert_chain: Vec<CertificateDer> = rustls_pemfile::certs(&mut server_cert_file)
         .map(|result| result.unwrap())
         .collect();
+    let mut intermediates: Vec<CertificateDer> = rustls_pemfile::certs(&mut chain_cert_file)
+        .map(|result| result.unwrap())
+        .collect();
+    cert_chain.append(&mut intermediates);
+
     let key = rustls_pemfile::private_key(&mut key_file).unwrap().unwrap();
 
     let config = ServerConfig::builder()
