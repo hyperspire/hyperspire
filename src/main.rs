@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
         .with_single_cert(cert_chain, key)
         .unwrap();
 
-    println!("Starting HTTPS server at https://localhost:8443");
+    println!("Starting HTTPS server at https://localhost:443");
 
     HttpServer::new(|| {
         App::new().service(
@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
                 .use_last_modified(true),
         )
     })
-    .bind_rustls_0_23(("0.0.0.0", 8443), config)?
+    .bind_rustls_0_23(("0.0.0.0", 443), config)?
     .run()
     .await
 }

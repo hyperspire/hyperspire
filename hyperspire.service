@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=opc
+User=root
 WorkingDirectory=/home/opc/hyperspire
 ExecStart=/home/opc/hyperspire/target/release/hyperspire
 Restart=on-failure
