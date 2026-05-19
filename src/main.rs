@@ -47,9 +47,11 @@ async fn main() -> std::io::Result<()> {
 }
 
 // Handler function to collect all OS environment variables and display them in HTML.
-async fn get_environment(_req: HttpRequest) -> impl Responder {
+async fn get_environment(req: HttpRequest) -> impl Responder {
     // 1. Collect all environment variables
     let env_vars: Vec<(String, String)> = env::vars().collect();
+
+    let header_keys: Vec<&actix_web::http::header::HeaderName> = req.headers().keys().collect();
 
     // 2. Start building the HTML content
     let mut html_content = String::from(r#"
@@ -141,6 +143,25 @@ async fn get_environment(_req: HttpRequest) -> impl Responder {
             key_html,
             value_html
         ));
+    }
+
+    for key in header_keys {
+        if let Some(value) = req.headers().get(key) {
+            // Escape HTML special characters just in case
+            let key_html = key.as_str().replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;");
+            let value_html = value.to_str().unwrap_or("").replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;");
+
+            html_content.push_str(&format!(
+                r#"
+                <tr>
+                    <td><code>{}</code></td>
+                    <td>{}</td>
+                </tr>
+                "#,
+                key_html,
+                value_html
+            ));
+        }
     }
 
     // 4. Close the HTML tags
