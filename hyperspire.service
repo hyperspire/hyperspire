@@ -7,6 +7,7 @@ Type=simple
 User=opc
 WorkingDirectory=/home/opc/hyperspire
 ExecStart=/home/opc/hyperspire/target/release/hyperspire
+LimitNOFILE=65535
 Restart=on-failure
 RestartSec=5
 
